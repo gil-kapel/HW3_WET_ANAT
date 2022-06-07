@@ -44,7 +44,9 @@ htmlcov/
 .coverage
 .coverage.*
 .cache
-LFW
+given_data/LFW
+given_data/LFW/
+given_data/Time_Pink_Floyd.mp4
 nosetests.xml
 coverage.xml
 *.cover
