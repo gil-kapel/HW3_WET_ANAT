@@ -41,7 +41,9 @@ def question2():
     plt.show()
 
     for i, vector in enumerate(ten_eig_vecs[:4]):
-        cv2.imshow(f'Eigen image_{i+1}', vector.reshape(image_shape, order='F'))
+        vector_range = np.max(vector) - np.min(vector)
+        vector_int = ((vector + np.abs(np.min(vector))) * 255 / vector_range).astype('uint8')
+        cv2.imshow(f'Eigen image_{i+1}', vector_int.reshape(image_shape, order='F'))
 
     # ---------------------------- section 2.c -------------------------------
     P = ten_eig_vecs @ Y

@@ -120,9 +120,10 @@ def question3():
     mid_img = int(mask.shape[0]/2)
     mask[:, :mid_img] = 1
     mask_gauss_pyr, mask_laplace_pyr = pyr_gen(n, 0, mask, [], [])
-    blend_laplace = [ironman_laplace_pyr[i] * mask_laplace_pyr[i] + (1 - (mask_laplace_pyr[i])) * downey_laplace_pyr[i]
+    blend_laplace = [(ironman_laplace_pyr[i] * mask_gauss_pyr[i] +
+                     (1 - (mask_gauss_pyr[i])) * downey_laplace_pyr[i]).astype('int')
                      for i in range(len(ironman_laplace_pyr))]
-
+    blend_laplace[-1] = blend_laplace[-1].astype('uint8')
     blend_recon = laplace_recon(copy.deepcopy(blend_laplace))
     blend_mse = calc_mse(blend_recon, downey)
     cv2.imshow(f'blend_mse with mse:{blend_mse}', blend_recon)
