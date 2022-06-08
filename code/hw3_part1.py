@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import cv2
 import glob
 import copy
-from utils import video_to_frames, show_single_graph, show_double_graph, spatial_sample
+from utils import video_to_frames, show_single_graph, show_double_graph, spatial_sample_x
 
 
 def section1_a():
@@ -23,16 +23,13 @@ def section1_a():
                       'x location in the frame', 'gray level of blue channel')
 
     # --------------------------------------------- section 1.3 --------------
-    sampled_image = spatial_sample(first_frame, 64)
+    sampled_image, sampled_image_with_red = spatial_sample_x(first_frame, 64)
     cv2.imshow("Sampled_line", sampled_image)
-
-    sampled_image_with_red = spatial_sample(first_frame_copy, 64)
-    cv2.imshow("Sampled_line", sampled_image_with_red)
+    cv2.imshow("original image with sampled lines", sampled_image_with_red)
 
     # --------------------------------------------- section 1.4 --------------
-    original_sized_red_line_sampled = cv2.resize(sampled_image_with_red, (first_frame.shape[1], first_frame.shape[0]))
     original_sized_sampled = cv2.resize(sampled_image, (first_frame.shape[1], first_frame.shape[0]))
-    cv2.imshow("original_sized_sampled", original_sized_red_line_sampled)
+    cv2.imshow("original_sized_sampled", original_sized_sampled)
 
     # --------------------------------------------- section 1.5 --------------
     sampled_seven_clocks_line = original_sized_sampled[292, :, :]
@@ -52,7 +49,7 @@ def section1_b():
     original_vid = cv2.VideoWriter('../my_data/original_video_1_b.mp4v', cv2.VideoWriter_fourcc(*'mp4v'), fps, size)
     sampled_vid = cv2.VideoWriter('../my_data/video_sample_1_b.mp4v', cv2.VideoWriter_fourcc(*'mp4v'), fps, size)
     for i in range(len(pink_floyd_frames_b)):
-        frame = cv2.resize(spatial_sample(pink_floyd_frames_b[i], 16), size)
+        frame = cv2.resize(spatial_sample_x(pink_floyd_frames_b[i], 16)[0], size)
         sampled_vid.write(frame)
         original_vid.write(pink_floyd_frames_b[i])
     sampled_vid.release()

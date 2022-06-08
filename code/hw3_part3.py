@@ -57,15 +57,24 @@ def laplace_recon(laplace_pyr):
     """
     # ====== YOUR CODE: ======
     # ========================
-    recon_img = np.zeros(laplace_pyr[0].shape)
-    for i, image in enumerate(laplace_pyr):
-        image_range = np.max(image)-np.min(image)
-        if i != len(laplace_pyr) - 1:
-            image = (np.array((image + np.abs(np.min(image))) * 255 / image_range)).astype('uint8')
-        for j in range(i):
-            image = cv2.pyrUp(image)
+    recon_img = cv2.pyrUp(laplace_pyr[-1]).astype('int')
+
+    for i, image in enumerate(laplace_pyr[::-1][1:], start=1):
         recon_img += image
+        image_range = np.max(recon_img)-np.min(recon_img)
+        recon_img = (np.array((recon_img + np.abs(np.min(recon_img))) * 255 / image_range)).astype('uint8')
+        if i < len(laplace_pyr) - 1:
+            recon_img = cv2.pyrUp(recon_img).astype('int')
     return recon_img.astype('uint8')
+
+    # for i, image in enumerate(laplace_pyr[::-1]):
+    #     image_range = np.max(image)-np.min(image)
+    #     if i != len(laplace_pyr) - 1:
+    #         image = (np.array((image + np.abs(np.min(image))) * 255 / image_range)).astype('uint8')
+    #     for j in range(i):
+    #         image = cv2.pyrUp(image)
+    #     recon_img += image
+    # return recon_img.astype('uint8')
 
 
 def question3():
@@ -111,13 +120,12 @@ def question3():
     mid_img = int(mask.shape[0]/2)
     mask[:, :mid_img] = 1
     mask_gauss_pyr, mask_laplace_pyr = pyr_gen(n, 0, mask, [], [])
-    pass
-    blend_laplace = np.array(ironman_laplace_pyr) * np.array(mask_laplace_pyr) + \
-                    (1 - np.array(mask_laplace_pyr)) * np.array(downey_laplace_pyr)
+    blend_laplace = [ironman_laplace_pyr[i] * mask_laplace_pyr[i] + (1 - (mask_laplace_pyr[i])) * downey_laplace_pyr[i]
+                     for i in range(len(ironman_laplace_pyr))]
+
     blend_recon = laplace_recon(copy.deepcopy(blend_laplace))
-    blend_mse = calc_mse(blend_recon, ironman)
+    blend_mse = calc_mse(blend_recon, downey)
     cv2.imshow(f'blend_mse with mse:{blend_mse}', blend_recon)
-    pass
 
 
 if __name__ == '__main__':
