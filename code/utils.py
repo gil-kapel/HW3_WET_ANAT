@@ -66,3 +66,7 @@ def spatial_sample(first_frame, delta_x):
 
     sampled_line = np.swapaxes(sampled_line, 0, 1)
     return sampled_line
+
+
+def calc_mse(x, x_hat):
+    return ((x_hat - x) ** 2).mean(axis=0).mean(axis=0)
