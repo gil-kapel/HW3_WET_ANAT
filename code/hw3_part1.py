@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
@@ -44,12 +46,14 @@ def section1_b():
     pink_floyd_frames_b, fps = video_to_frames('../given_data/Time_Pink_Floyd.mp4', 30, 45)
 
     # --------------------------------------------- section 1.2 --------------
+    p = 16
     height, width, layers = pink_floyd_frames_b[0].shape
     size = (width, height)
     original_vid = cv2.VideoWriter('../my_data/original_video_1_b.mp4v', cv2.VideoWriter_fourcc(*'mp4v'), fps, size)
     sampled_vid = cv2.VideoWriter('../my_data/video_sample_1_b.mp4v', cv2.VideoWriter_fourcc(*'mp4v'), fps, size)
     for i in range(len(pink_floyd_frames_b)):
-        frame = cv2.resize(spatial_sample_x(pink_floyd_frames_b[i], 16)[0], size)
+        j = int(i / p)
+        frame = pink_floyd_frames_b[j]
         sampled_vid.write(frame)
         original_vid.write(pink_floyd_frames_b[i])
     sampled_vid.release()
@@ -57,6 +61,6 @@ def section1_b():
 
 
 if __name__ == '__main__':
-    section1_a()
+    # section1_a()
     section1_b()
     cv2.destroyAllWindows()
