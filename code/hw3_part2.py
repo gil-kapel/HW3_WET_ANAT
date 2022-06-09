@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import cv2
 import glob
 import os
-from utils import show_single_graph, calc_mse
+from utils import rescale, calc_mse
 
 
 def question2():
@@ -34,53 +34,44 @@ def question2():
     # --------------------------------------------- section 2.1 --------------
     k = 10
     eig_vals, eig_vecs = np.linalg.eigh(y_cov)
-    ten_eig_vals, ten_eig_vecs = eig_vals[::-1][:k], eig_vecs[:, ::-1][:, :k]
+    ten_eig_vals, ten_eig_vecs = eig_vals[::-1][:k], eig_vecs[:, ::-1]
+    ten_eig_vecs = ten_eig_vecs[:, :k]
     x = np.linspace(0, k, k)
     plt.plot(x, ten_eig_vals)
     plt.title('Eigen values')
     plt.show()
-    ten_eig_vecs = np.swapaxes(ten_eig_vecs, 1, 0)
 
     nine_eig_vals = eig_vals[::-1][1:k]
     x = np.linspace(1, k, k-1)
     plt.plot(x, nine_eig_vals)
     plt.title('Nine first eigen values, without the highest')
     plt.show()
-
-    for i, vector in enumerate(ten_eig_vecs[:4]):
-        vector_range = np.max(vector) - np.min(vector)
-        vector_int = ((vector + np.abs(np.min(vector))) * 255 / vector_range).astype('uint8')
+    for i, vector in enumerate(ten_eig_vecs.T[:4]):
+        vector_int = rescale(vector)
         cv2.imshow(f'Eigen image_{i+1}', vector_int.reshape(image_shape, order='F'))
 
     # ---------------------------- section 2.c -------------------------------
-    P = ten_eig_vecs @ Y
+    P = ten_eig_vecs.T @ Y
 
     # ---------------------------- section 2.d -------------------------------
     p_i = P[:, :4]
-    x_hat = ten_eig_vecs.T @ p_i + mu
-    x_hat = x_hat.reshape((image_shape[0], image_shape[1], 4), order='F')
-    x_hat = np.swapaxes(x_hat, 2, 1)
-    x_hat = np.swapaxes(x_hat, 1, 0)
-    x_b = image_list[:4]
-    for i, vector in enumerate(x_hat[:4]):
-        mse = calc_mse(vector, x_b[i])
-        cv2.imshow(f'{k} compression, MSE= {mse}', vector)
+    x_hat = ten_eig_vecs @ p_i + mu
+    for i, vector in enumerate(x_hat.T):
+        image = rescale(vector.reshape(image_shape, order='F'))
+        mse = calc_mse(image, image_list[i])
+        cv2.imshow(f'{k} compression, MSE= {mse}', image)
 
     # ---------------------------- section 2.e -------------------------------
     k = 570
-    eig_vals_e, eig_vecs_e = eig_vals[::-1][:k], eig_vecs[:, ::-1][:, :k]
-    eig_vecs_e = np.swapaxes(eig_vecs_e, 1, 0)
-
-    P = eig_vecs_e @ Y
+    eig_vals_e, eig_vecs_e = eig_vals[::-1][:k], eig_vecs[:, ::-1]
+    eig_vecs_e = eig_vecs_e[:, :k]
+    P = eig_vecs_e.T @ Y
     p_i = P[:, :4]
-    x_hat = eig_vecs_e.T @ p_i + mu
-    x_hat = x_hat.reshape((image_shape[0], image_shape[1], 4), order='F')
-    x_hat = np.swapaxes(x_hat, 2, 1)
-    x_hat = np.swapaxes(x_hat, 1, 0)
-    x_b = image_list[:4]
-    for i, vector in enumerate(x_hat[:4]):
-        mse = calc_mse(vector, x_b[i])
-        cv2.imshow(f'{k} compression, MSE= {mse}', vector)
+    x_hat = eig_vecs_e @ p_i + mu
+    for i, vector in enumerate(x_hat.T):
+        image = rescale(vector.reshape(image_shape, order='F'))
+        mse = calc_mse(image, image_list[i])
+        cv2.imshow(f'{k} compression, MSE= {mse}', image)
 
 
 if __name__ == '__main__':

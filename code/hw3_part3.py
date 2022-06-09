@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 import glob
-from utils import calc_mse
+from utils import calc_mse, rescale
 
 
 def pyr_gen(n, m, img, gauss_pyr, laplace_pyr):
@@ -79,10 +79,9 @@ def question3():
         image = np.array(image)
         cv2.imwrite(f"../my_data/q3/IronMan_Gauss_image{image.shape[0]}.jpeg", image)
     for i, image in enumerate(ironman_laplace_pyr):
-        image_range = np.max(image)-np.min(image)
         img = image
         if i != len(ironman_laplace_pyr) - 1:
-            img = (np.array((image + np.abs(np.min(image))) * 255 / image_range)).astype('uint8')
+            img = rescale(image)
         cv2.imwrite(f"../my_data/q3/IronMan_Laplace_image{img.shape[0]}.jpeg", img)
 
     downey_gauss_pyr, downey_laplace_pyr = pyr_gen(n, 0, downey, [], [])
@@ -90,10 +89,9 @@ def question3():
         image = np.array(image)
         cv2.imwrite(f"../my_data/q3/Downey_Gauss_image{image.shape[0]}.jpeg", image)
     for i, image in enumerate(downey_laplace_pyr):
-        image_range = np.max(image)-np.min(image)
         img = image
         if i != len(downey_laplace_pyr) - 1:
-            img = (np.array((image + np.abs(np.min(image))) * 255 / image_range)).astype('uint8')
+            img = rescale(image)
         cv2.imwrite(f"../my_data/q3/Downey_Laplace_image{img.shape[0]}.jpeg", img)
 
     # ---------------------------- section 3.b -------------------------------

@@ -77,3 +77,8 @@ def spatial_sample_x(first_frame, delta_x):
 
 def calc_mse(x, x_hat):
     return ((x_hat - x) ** 2).mean(axis=0).mean(axis=0)
+
+
+def rescale(image):
+    image_range = np.max(image) - np.min(image)
+    return np.array((image + np.abs(np.min(image))) * 255 / image_range).astype('uint8')
