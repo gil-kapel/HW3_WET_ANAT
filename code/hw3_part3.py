@@ -67,15 +67,6 @@ def laplace_recon(laplace_pyr):
             recon_img = cv2.pyrUp(recon_img).astype('int')
     return recon_img.astype('uint8')
 
-    # for i, image in enumerate(laplace_pyr[::-1]):
-    #     image_range = np.max(image)-np.min(image)
-    #     if i != len(laplace_pyr) - 1:
-    #         image = (np.array((image + np.abs(np.min(image))) * 255 / image_range)).astype('uint8')
-    #     for j in range(i):
-    #         image = cv2.pyrUp(image)
-    #     recon_img += image
-    # return recon_img.astype('uint8')
-
 
 def question3():
     # ---------------------------- section 3.a -------------------------------
