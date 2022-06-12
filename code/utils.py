@@ -59,16 +59,9 @@ def spatial_sample_x(first_frame, delta_x):
     original_frame_with_sample_marks = copy.deepcopy(first_frame)
     sampled_line = np.array([first_frame[:, n * delta_x + mid_line_idx]
                              for n in range(-range_to_sample, range_to_sample)])
-
-    # sampled_line = []
-    # original_frame_with_sample_marks = copy.deepcopy(first_frame)
-    # sampled_line.append(first_frame[:, mid_line_idx])
-    # original_frame_with_sample_marks[:, mid_line_idx] = [0, 0, 255, 255]
-    for n in range(1, range_to_sample):
+    for n in range(range_to_sample):
         original_frame_with_sample_marks[:, n * delta_x + mid_line_idx] = [0, 0, 255, 255]
         original_frame_with_sample_marks[:, -n * delta_x + mid_line_idx] = [0, 0, 255, 255]
-    #     sampled_line.append(first_frame[:, n * delta_x + mid_line_idx])
-    #     sampled_line.append(first_frame[:, -n * delta_x + mid_line_idx])
 
     sampled_line = np.array(sampled_line)
     sampled_line = np.swapaxes(sampled_line, 0, 1)

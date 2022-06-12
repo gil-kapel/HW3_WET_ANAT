@@ -1,9 +1,4 @@
-import math
-
-import numpy as np
-import matplotlib.pyplot as plt
 import cv2
-import glob
 import copy
 from utils import video_to_frames, show_single_graph, show_double_graph, spatial_sample_x
 
@@ -49,15 +44,12 @@ def section1_b():
     p = 16
     height, width, layers = pink_floyd_frames_b[0].shape
     size = (width, height)
-    original_vid = cv2.VideoWriter('../my_data/original_video_1_b.mp4v', cv2.VideoWriter_fourcc(*'mp4v'), fps, size)
     sampled_vid = cv2.VideoWriter('../my_data/video_sample_1_b.mp4v', cv2.VideoWriter_fourcc(*'mp4v'), fps, size)
-    for i in range(len(pink_floyd_frames_b)):
-        j = int(i / p)
-        frame = pink_floyd_frames_b[j]
-        sampled_vid.write(frame)
-        original_vid.write(pink_floyd_frames_b[i])
+    length = int(len(pink_floyd_frames_b) / p)
+    for i in range(length):
+        for j in range(p):
+            sampled_vid.write(pink_floyd_frames_b[i * p])
     sampled_vid.release()
-    original_vid.release()
 
 
 if __name__ == '__main__':
